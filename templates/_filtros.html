@@ -1,0 +1,8 @@
+<form method="get" class="row g-2 mb-3 d-print-none">
+  <div class="col-sm-5"><input class="form-control" type="search" name="q" value="{{ q }}" placeholder="Buscar por nombre o descripción" aria-label="Buscar"></div>
+  <div class="col-sm-4"><select class="form-select" name="estado" aria-label="Filtrar por estado">
+    <option value="">Todos los estados</option>
+    {% for e in estados %}<option value="{{ e }}" {% if e == estado %}selected{% endif %}>{{ e }}</option>{% endfor %}
+  </select></div>
+  <div class="col-sm-3 d-flex gap-2"><button class="btn btn-outline-primary" type="submit">Filtrar</button><a class="btn btn-outline-secondary" href="?">Limpiar</a></div>
+</form>

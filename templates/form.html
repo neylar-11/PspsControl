@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block contenido %}
+<div class="row justify-content-center"><div class="col-lg-8">
+  <h1 class="h4 mb-3">{{ titulo }}</h1>
+  <form method="post" class="card card-body shadow-sm" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="row g-3">
+      {% for campo in form %}
+      <div class="col-md-{% if campo.field.widget.input_type == 'textarea' or campo.name == 'descripcion' or campo.name == 'evidencia' %}12{% else %}6{% endif %}">
+        <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}{% if campo.field.required %} *{% endif %}</label>
+        {{ campo }}
+        {% if campo.help_text %}<div class="form-text">{{ campo.help_text }}</div>{% endif %}
+        {% for e in campo.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="mt-4 d-flex gap-2">
+      <button class="btn btn-primary" type="submit">Guardar</button>
+      <a class="btn btn-outline-secondary" href="{% if volver_args %}{% url volver volver_args.0 %}{% else %}{% url volver %}{% endif %}">Cancelar</a>
+    </div>
+  </form>
+</div></div>
+{% endblock %}

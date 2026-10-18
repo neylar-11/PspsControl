@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block titulo %}Proyectos{% endblock %}
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div><h1 class="h4 mb-0">Proyectos</h1><div class="text-muted small">Un proyecto por intervalo de registro; los anteriores se conservan.</div></div>
+  <a class="btn btn-primary" href="{% url 'proyectos:crear' %}">+ Nuevo proyecto</a>
+</div>
+{% if items %}
+<div class="card shadow-sm"><div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+  <thead class="table-light"><tr><th>Proyecto</th><th>Intervalo</th><th>Responsable</th><th>Estado general</th><th>Último corte</th><th></th></tr></thead>
+  <tbody>
+  {% for it in items %}
+  <tr>
+    <td><a class="fw-semibold" href="{{ it.proyecto.get_absolute_url }}">{{ it.proyecto.nombre }}</a><div class="text-muted small">{{ it.proyecto.descripcion|truncatechars:70 }}</div></td>
+    <td>{{ it.proyecto.fecha_inicio|date:"d/m/Y" }} – {{ it.proyecto.fecha_fin|date:"d/m/Y" }}<div class="text-muted small">{{ it.proyecto.duracion_dias }} días</div></td>
+    <td>{{ it.proyecto.responsable }}</td>
+    <td>{% if it.corte %}<span class="sem sem-{{ it.corte.estado_general }}">{% if it.corte.estado_general == 'gris' %}Sin datos{% else %}{{ it.corte.estado_general|capfirst }}{% endif %}</span>{% else %}<span class="text-muted">Sin cortes</span>{% endif %}</td>
+    <td>{% if it.corte %}{{ it.corte.fecha_corte|date:"d/m/Y" }}{% else %}—{% endif %}</td>
+    <td class="text-end text-nowrap">
+      <a class="btn btn-sm btn-outline-secondary" href="{% url 'proyectos:editar' it.proyecto.pk %}">Editar</a>
+      <a class="btn btn-sm btn-outline-primary" href="{% url 'proyectos:crear' %}?desde={{ it.proyecto.pk }}">Abrir nuevo intervalo</a>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table></div></div>
+{% else %}
+<div class="card card-body text-center py-5"><h2 class="h5">Aún no hay proyectos</h2><p class="text-muted">Registra el primer proyecto y su intervalo para comenzar a medir su calidad.</p>
+<div><a class="btn btn-primary" href="{% url 'proyectos:crear' %}">Crear primer proyecto</a></div></div>
+{% endif %}
+{% endblock %}

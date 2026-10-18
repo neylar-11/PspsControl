@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block titulo %}Actividades SQA{% endblock %}
+{% block contenido %}
+<div class="page-head">
+  <div><h1 class="h4 mb-0">Actividades SQA</h1><div class="text-muted small">Revisiones, inspecciones y pruebas planeadas, con responsable, fecha, estado y evidencia.</div></div>
+  <a class="btn btn-primary" href="{% url 'actividades:crear' proyecto.pk %}">+ Nueva actividad</a>
+</div>
+{% include '_filtros.html' %}
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+  <thead class="table-light"><tr><th>ID</th><th>Actividad</th><th>Tipo</th><th>Responsable</th><th>Prevista</th><th>Estado</th><th>Evidencia</th><th></th></tr></thead>
+  <tbody>
+  {% for a in registros %}
+  <tr><td>{{ a.codigo }}</td><td>{{ a.nombre }}</td><td>{{ a.tipo }}</td><td>{{ a.responsable }}</td><td>{{ a.fecha_prevista|date:"d/m/Y" }}</td>
+    <td><span class="badge text-bg-{% if a.estado == 'Terminada' %}success{% elif a.estado == 'En curso' %}warning{% else %}secondary{% endif %}">{{ a.estado }}</span>{% if a.fecha_terminada %}<div class="small text-muted">{{ a.fecha_terminada|date:"d/m/Y" }}</div>{% endif %}</td>
+    <td class="small">{{ a.evidencia|truncatechars:60 }}</td>
+    <td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="{% url 'actividades:editar' proyecto.pk a.pk %}">Editar</a></td></tr>
+  {% empty %}<tr><td colspan="8" class="text-center text-muted py-4">No hay actividades registradas.</td></tr>{% endfor %}
+  </tbody></table></div></div>
+{% endblock %}

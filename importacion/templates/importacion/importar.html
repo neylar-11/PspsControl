@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block titulo %}Importar CSV{% endblock %}
+{% block contenido %}
+<h1 class="h4 mb-1">Importar registros desde CSV</h1>
+<p class="text-muted small">Usa las plantillas del sistema. Se valida todo el archivo antes de guardar: si hay un solo error, no se importa nada.</p>
+<div class="row g-3">
+  <div class="col-lg-4"><div class="card shadow-sm h-100"><div class="card-body">
+    <h2 class="h6">1. Descarga la plantilla</h2>
+    <ul class="list-unstyled mb-0">
+      {% for clave, t in tipos.items %}<li class="mb-1"><a href="{% url 'importacion:plantilla' proyecto.pk clave %}">⬇ {{ t.titulo }}</a></li>{% endfor %}
+    </ul>
+    <p class="small text-muted mt-3 mb-0">Fechas en formato AAAA-MM-DD (los defectos aceptan también AAAA-MM-DD HH:MM). La evidencia es obligatoria en todas las filas. Los resultados de prueba requieren que el caso ya exista.</p>
+  </div></div></div>
+  <div class="col-lg-8"><div class="card shadow-sm h-100"><div class="card-body">
+    <h2 class="h6">2. Sube el archivo</h2>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row g-2">
+        <div class="col-md-5"><label class="form-label" for="tipo">Tipo de registro</label>
+          <select class="form-select" id="tipo" name="tipo">{% for clave, t in tipos.items %}<option value="{{ clave }}" {% if clave == tipo_sel %}selected{% endif %}>{{ t.titulo }}</option>{% endfor %}</select></div>
+        <div class="col-md-7"><label class="form-label" for="archivo">Archivo CSV (máx. 2 MB)</label>
+          <input class="form-control" type="file" id="archivo" name="archivo" accept=".csv,text/csv"></div>
+      </div>
+      <div class="mt-3 d-flex gap-2">
+        <button class="btn btn-outline-primary" type="submit" name="accion" value="validar">Solo validar</button>
+        <button class="btn btn-primary" type="submit" name="accion" value="importar">Validar e importar</button>
+      </div>
+    </form>
+  </div></div></div>
+</div>
+{% if errores %}
+<div class="card shadow-sm mt-4 border-danger"><div class="card-header bg-danger text-white">Errores por fila ({{ errores|length }})</div>
+<div class="table-responsive"><table class="table table-sm mb-0">
+  <thead><tr><th>Fila</th><th>Campo</th><th>Problema</th></tr></thead>
+  <tbody>{% for e in errores %}<tr><td>{{ e.fila }}</td><td>{{ e.campo }}</td><td>{{ e.mensaje }}</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endif %}
+{% endblock %}

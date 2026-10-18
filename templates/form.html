@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 {% block titulo %}{{ titulo }}{% endblock %}
 {% block contenido %}
-<div class="row justify-content-center"><div class="col-lg-8">
-  <h1 class="h4 mb-3">{{ titulo }}</h1>
-  <form method="post" class="card card-body shadow-sm" novalidate>
+<div class="page-head">
+  <div><div class="eyebrow">Registro de calidad</div><h1>{{ titulo }}</h1>
+    <div class="sub">Los campos con * son obligatorios. La evidencia siempre es obligatoria.</div></div>
+</div>
+<div class="row"><div class="col-xl-9">
+  <form method="post" class="card card-body p-4" novalidate>
     {% csrf_token %}
-    {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+    {% if form.non_field_errors %}<div class="flash flash-error">{{ form.non_field_errors }}</div>{% endif %}
     <div class="row g-3">
       {% for campo in form %}
       <div class="col-md-{% if campo.field.widget.input_type == 'textarea' or campo.name == 'descripcion' or campo.name == 'evidencia' %}12{% else %}6{% endif %}">

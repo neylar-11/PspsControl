@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block titulo %}Pruebas{% endblock %}
+{% block contenido %}
+<div class="page-head">
+  <div><h1 class="h4 mb-0">Pruebas</h1><div class="text-muted small">Casos planificados por versión y su último resultado.</div></div>
+  <a class="btn btn-primary" href="{% url 'pruebas:crear' proyecto.pk %}">+ Nuevo caso</a>
+</div>
+{% include '_filtros.html' %}
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+  <thead class="table-light"><tr><th>ID</th><th>Caso</th><th>Versión</th><th>Prevista</th><th>Último resultado</th><th>Ejecutor</th><th></th></tr></thead>
+  <tbody>
+  {% for f in filas %}
+  <tr><td>{{ f.caso.codigo }}</td><td>{{ f.caso.nombre }}<div class="small text-muted">Esperado: {{ f.caso.resultado_esperado|truncatechars:60 }}</div></td>
+    <td>{{ f.caso.version }}</td><td>{{ f.caso.fecha_prevista|date:"d/m/Y" }}</td>
+    <td><span class="badge text-bg-{% if f.etiqueta == 'Aprobada' %}success{% elif f.etiqueta == 'Fallida' %}danger{% else %}secondary{% endif %}">{{ f.etiqueta }}</span>{% if f.ultimo %}<div class="small text-muted">{{ f.ultimo.fecha_ejecucion|date:"d/m/Y" }}</div>{% endif %}</td>
+    <td>{% if f.ultimo %}{{ f.ultimo.ejecutor }}{% else %}—{% endif %}</td>
+    <td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-primary" href="{% url 'pruebas:resultado' proyecto.pk f.caso.pk %}">Registrar resultado</a>
+      <a class="btn btn-sm btn-outline-secondary" href="{% url 'pruebas:editar' proyecto.pk f.caso.pk %}">Editar</a></td></tr>
+  {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">No hay casos de prueba registrados.</td></tr>{% endfor %}
+  </tbody></table></div></div>
+{% endblock %}

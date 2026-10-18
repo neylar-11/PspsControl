@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block titulo %}Defectos{% endblock %}
+{% block contenido %}
+<div class="page-head">
+  <div><h1 class="h4 mb-0">Defectos</h1><div class="text-muted small">Descripción, severidad, estado, fechas, evidencia y cierre verificado.</div></div>
+  <a class="btn btn-primary" href="{% url 'defectos:crear' proyecto.pk %}">+ Registrar defecto</a>
+</div>
+{% include '_filtros.html' %}
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+  <thead class="table-light"><tr><th>ID</th><th>Descripción</th><th>Severidad</th><th>Estado</th><th>Reportado</th><th>Cierre verificado</th><th>Horas</th><th></th></tr></thead>
+  <tbody>
+  {% for d in registros %}
+  <tr><td>{{ d.codigo }}</td><td>{{ d.descripcion|truncatechars:80 }}<div class="small text-muted">{{ d.responsable }} · {{ d.evidencia|truncatechars:40 }}</div></td>
+    <td><span class="badge text-bg-{% if d.severidad == 'Crítica' %}danger{% elif d.severidad == 'Alta' %}warning{% else %}secondary{% endif %}">{{ d.severidad }}</span></td>
+    <td>{{ d.get_estado_display }}</td><td>{{ d.fecha_reporte|date:"d/m/Y H:i" }}</td>
+    <td>{% if d.fecha_cierre %}{{ d.fecha_cierre|date:"d/m/Y H:i" }}<div class="small text-muted">por {{ d.verificado_por }}</div>{% else %}—{% endif %}</td>
+    <td>{% if d.horas_resolucion is not None %}{{ d.horas_resolucion|floatformat:1 }}{% else %}—{% endif %}</td>
+    <td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="{% url 'defectos:editar' proyecto.pk d.pk %}">Editar</a></td></tr>
+  {% empty %}<tr><td colspan="8" class="text-center text-muted py-4">No hay defectos registrados. Si de verdad no hay, confirma el registro en el dashboard.</td></tr>{% endfor %}
+  </tbody></table></div></div>
+{% endblock %}

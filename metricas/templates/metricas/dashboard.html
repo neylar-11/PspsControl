@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block titulo %}Dashboard{% endblock %}
+{% block contenido %}
+<div class="page-head">
+  <div><div class="eyebrow">Panel de control SQA</div><h1>Dashboard de calidad</h1>
+    <div class="sub">{{ proyecto.nombre }}{% if corte %} · corte al {{ corte.fecha_corte|date:"d/m/Y" }} · calculado {{ corte.calculado_en|date:"d/m/Y H:i" }}{% endif %}</div></div>
+  <form method="post" action="{% url 'metricas:crear_corte' proyecto.pk %}" class="d-flex gap-2 align-items-end flex-wrap">
+    {% csrf_token %}
+    <div><label class="form-label mb-1" for="fecha_corte">Fecha de corte (vacío = hoy)</label>
+    <input class="form-control" type="date" id="fecha_corte" name="fecha_corte"></div>
+    <button class="btn btn-primary" type="submit">Calcular y guardar corte</button>
+  </form>
+</div>
+
+{% if not corte %}
+<div class="card empty-state"><div class="big">◫</div><h2 class="h5">Todavía no hay mediciones</h2>
+<p class="text-muted mb-0">Registra actividades, pruebas y defectos (o importa un CSV); el corte se calcula solo al guardar. También puedes calcularlo con el botón.</p></div>
+{% else %}
+<section class="hero hero-{{ corte.estado_general }}">
+  <div><div class="micro">Estado general del proyecto</div>
+    <div class="estado">{% if corte.estado_general == 'gris' %}Sin datos suficientes{% else %}{{ corte.estado_general|capfirst }}{% endif %}</div>
+    <div class="motivo">{{ corte.motivo_general }}</div></div>
+  <div class="hero-side"><b>{{ total_pendientes }}</b><span>Pendientes al corte</span></div>
+</section>
+
+<div class="row g-3 mb-4">
+  {% for m in mediciones %}
+  <div class="col-md-6 col-xl-4"><div class="card ind ind-{{ m.estado }}">
+    <div class="ind-nombre"><span>{{ m.nombre }}</span><span class="sem sem-{{ m.estado }}">{{ m.etiqueta }}</span></div>
+    {% if m.valor is not None %}<div class="ind-valor">{{ m.valor|floatformat:"-1" }}{% if m.unidad == '%' %}<small>%</small>{% elif m.unidad == 'h' %}<small> h</small>{% endif %}</div>
+    {% else %}<div class="ind-valor text-muted">—</div>{% endif %}
+    {% if m.unidad == '%' and m.valor is not None %}<div class="barra"><span class="barra-{{ m.estado }}" style="width: {{ m.valor|floatformat:'0' }}%"></span></div>{% endif %}
+    {% if m.motivo %}<div class="ind-det">{{ m.motivo }}</div>{% endif %}
+    {% if m.denominador is not None and m.unidad == '%' %}<div class="ind-det">{{ m.numerador|floatformat:"-1" }} de {{ m.denominador|floatformat:"-1" }}</div>{% endif %}
+    <div class="regla">{{ m.regla }}</div>
+  </div></div>
+  {% endfor %}
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-7"><div class="card h-100"><div class="card-body p-4">
+    <h2 class="h6 mb-3">Evolución por corte (%)</h2>
+    {% if grafica.fechas|length > 1 %}<canvas id="grafica" height="140"></canvas>
+    {% else %}<p class="text-muted small mb-0">Se necesitan al menos dos cortes para mostrar la evolución.</p>{% endif %}
+  </div></div></div>
+  <div class="col-lg-5"><div class="card h-100"><div class="card-body p-4">
+    <h2 class="h6 mb-3">Pendientes y bloqueadas</h2>
+    <ul class="pend-lista">
+      {% for p in pendientes.actividades %}<li><strong>{{ p.codigo }}</strong> {{ p.nombre }} <span class="text-muted">· actividad {{ p.estado|lower }}, prevista {{ p.fecha_prevista }}</span></li>{% endfor %}
+      {% for p in pendientes.pruebas %}<li><strong>{{ p.codigo }}</strong> {{ p.nombre }} <span class="text-muted">· prueba sin ejecutar, prevista {{ p.fecha_prevista }}</span></li>{% endfor %}
+      {% for p in pendientes.defectos %}<li><strong>{{ p.codigo }}</strong> {{ p.descripcion }} <span class="text-muted">· defecto {{ p.severidad|lower }} abierto</span></li>{% endfor %}
+    </ul>
+    {% if not total_pendientes %}<p class="text-muted small mb-2">Sin pendientes al corte.</p>{% endif %}
+    <hr>
+    <form method="post" action="{% url 'proyectos:confirmar_defectos' proyecto.pk %}">{% csrf_token %}
+      <input type="hidden" name="confirmado" value="{% if proyecto.registro_defectos_confirmado %}0{% else %}1{% endif %}">
+      <div class="small mb-2">{% if proyecto.registro_defectos_confirmado %}El registro de defectos está <strong>confirmado como completo</strong>.{% else %}El registro de defectos <strong>no está confirmado</strong>: si no hay defectos, el indicador queda en “Sin datos”.{% endif %}</div>
+      <button class="btn btn-sm btn-outline-secondary" type="submit">{% if proyecto.registro_defectos_confirmado %}Quitar confirmación{% else %}Confirmar registro de defectos completo{% endif %}</button>
+    </form>
+  </div></div></div>
+</div>
+
+<div class="card mt-3"><div class="card-body p-4">
+  <h2 class="h6 mb-3">Cortes guardados</h2>
+  <div class="d-flex flex-wrap gap-2">
+    {% for c in cortes %}<a class="btn btn-sm btn-outline-secondary {% if c.pk == corte.pk %}active{% endif %}" href="?corte={{ c.fecha_corte|date:'Y-m-d' }}"><span class="sem sem-{{ c.estado_general }}">{{ c.fecha_corte|date:"d/m/Y" }}</span></a>{% endfor %}
+  </div>
+</div></div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{% if corte and grafica.fechas|length > 1 %}
+{% load static %}
+{{ grafica|json_script:"datos-grafica" }}
+<script src="{% static 'vendor/chart.umd.js' %}"></script>
+<script src="{% static 'js/grafica.js' %}"></script>
+{% endif %}
+{% endblock %}

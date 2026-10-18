@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block titulo %}Reporte de calidad{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3 d-print-none">
+  <form method="get" class="d-flex gap-2 align-items-end">
+    <div><label class="form-label small mb-0" for="corte">Fecha de corte</label>
+    <select class="form-select form-select-sm" id="corte" name="corte" onchange="this.form.submit()">
+      {% for c in cortes %}<option value="{{ c.fecha_corte|date:'Y-m-d' }}" {% if corte and c.pk == corte.pk %}selected{% endif %}>{{ c.fecha_corte|date:"d/m/Y" }}</option>{% endfor %}
+    </select></div>
+    <noscript><button class="btn btn-sm btn-outline-secondary">Ver</button></noscript>
+  </form>
+  <button class="btn btn-primary btn-sm" type="button" onclick="window.print()">Imprimir / guardar como PDF</button>
+</div>
+
+{% if not corte %}
+<div class="card card-body text-center py-5"><h2 class="h5">Sin cortes para reportar</h2><p class="text-muted mb-0">Calcula un corte desde el dashboard.</p></div>
+{% else %}
+<div class="card shadow-sm"><div class="card-body">
+  <div class="d-flex justify-content-between flex-wrap gap-2">
+    <div><div class="text-muted small">REPORTE DE CALIDAD A FECHA DE CORTE</div>
+      <h1 class="h4 mb-0">{{ proyecto.nombre }}</h1>
+      <div class="small text-muted">Intervalo {{ proyecto.fecha_inicio|date:"d/m/Y" }} – {{ proyecto.fecha_fin|date:"d/m/Y" }} · Responsable: {{ proyecto.responsable }}</div></div>
+    <div class="text-end"><div class="small text-muted">Corte al {{ corte.fecha_corte|date:"d/m/Y" }}</div>
+      <div class="estado-general"><span class="sem sem-{{ corte.estado_general }}">{% if corte.estado_general == 'gris' %}Sin datos suficientes{% else %}{{ corte.estado_general|capfirst }}{% endif %}</span></div>
+      <div class="small text-muted">{{ corte.motivo_general }}</div></div>
+  </div>
+
+  <h2 class="h6 mt-4">Indicadores y umbrales usados</h2>
+  <div class="table-responsive"><table class="table table-sm align-middle">
+    <thead class="table-light"><tr><th>Indicador</th><th>Valor</th><th>Semáforo</th><th>Umbrales (política del equipo)</th><th>Nota</th></tr></thead>
+    <tbody>
+    {% for m in mediciones %}
+    <tr><td>{{ m.nombre }}</td>
+      <td>{% if m.valor is not None %}{{ m.valor|floatformat:"-1" }}{% if m.unidad == '%' %}%{% elif m.unidad == 'h' %} h{% endif %}{% else %}—{% endif %}</td>
+      <td><span class="sem sem-{{ m.estado }}">{{ m.etiqueta }}</span></td><td class="small">{{ m.regla }}</td><td class="small">{{ m.motivo }}</td></tr>
+    {% endfor %}
+    </tbody></table></div>
+
+  <h2 class="h6 mt-4">Pendientes al corte</h2>
+  <ul class="small">
+    {% for p in pendientes.actividades %}<li>Actividad <strong>{{ p.codigo }}</strong> {{ p.nombre }} — {{ p.estado }}, prevista {{ p.fecha_prevista }}</li>{% endfor %}
+    {% for p in pendientes.pruebas %}<li>Prueba <strong>{{ p.codigo }}</strong> {{ p.nombre }} — sin ejecutar, prevista {{ p.fecha_prevista }}</li>{% endfor %}
+    {% for p in pendientes.defectos %}<li>Defecto <strong>{{ p.codigo }}</strong> ({{ p.severidad }}) {{ p.descripcion }}</li>{% endfor %}
+  </ul>
+  {% if not pendientes.actividades and not pendientes.pruebas and not pendientes.defectos %}<p class="small text-muted">Sin pendientes al corte.</p>{% endif %}
+
+  <h2 class="h6 mt-4">Evidencias al corte</h2>
+  <div class="table-responsive"><table class="table table-sm small">
+    <thead class="table-light"><tr><th>Tipo</th><th>ID</th><th>Evidencia</th></tr></thead>
+    <tbody>
+    {% for e in evidencias.actividades %}<tr><td>Actividad terminada</td><td>{{ e.codigo }}</td><td>{{ e.evidencia }}</td></tr>{% endfor %}
+    {% for e in evidencias.resultados %}<tr><td>Resultado de prueba ({{ e.resultado }}, {{ e.fecha }})</td><td>{{ e.codigo }}</td><td>{{ e.evidencia }}</td></tr>{% endfor %}
+    {% for e in evidencias.defectos %}<tr><td>Defecto</td><td>{{ e.codigo }}</td><td>{{ e.evidencia }}</td></tr>{% endfor %}
+    </tbody></table></div>
+  <p class="regla mb-0">Este reporte muestra la medición guardada al corte: no se recalcula con datos posteriores. Los umbrales son una política inicial del equipo, no provienen de una norma ni del cliente.</p>
+</div></div>
+{% endif %}
+{% endblock %}

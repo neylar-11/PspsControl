@@ -7,44 +7,49 @@
   <link rel="stylesheet" href="{% static 'vendor/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
-<body class="bg-light">
-<nav class="navbar navbar-dark bg-dark d-print-none">
-  <div class="container-xl">
-    <a class="navbar-brand fw-semibold" href="{% url 'proyectos:lista' %}">PSPS Control SQA</a>
-    <span class="navbar-text small">Plataforma de seguimiento de calidad de software</span>
-  </div>
-</nav>
-{% if proyecto %}
-<div class="bg-white border-bottom d-print-none">
-  <div class="container-xl py-2">
-    <div class="d-flex flex-wrap align-items-center gap-3">
-      <div><strong>{{ proyecto.nombre }}</strong>
-        <span class="text-muted small">· {{ proyecto.fecha_inicio|date:"d/m/Y" }} – {{ proyecto.fecha_fin|date:"d/m/Y" }}</span></div>
-      <ul class="nav nav-pills ms-auto small">
-        {% url 'metricas:dashboard' proyecto.pk as u_dash %}
-        <li class="nav-item"><a class="nav-link {% if request.path == u_dash %}active{% endif %}" href="{{ u_dash }}">Dashboard</a></li>
-        {% url 'actividades:lista' proyecto.pk as u_act %}
-        <li class="nav-item"><a class="nav-link {% if u_act in request.path %}active{% endif %}" href="{{ u_act }}">Actividades SQA</a></li>
-        {% url 'pruebas:lista' proyecto.pk as u_pru %}
-        <li class="nav-item"><a class="nav-link {% if u_pru in request.path %}active{% endif %}" href="{{ u_pru }}">Pruebas</a></li>
-        {% url 'defectos:lista' proyecto.pk as u_def %}
-        <li class="nav-item"><a class="nav-link {% if u_def in request.path %}active{% endif %}" href="{{ u_def }}">Defectos</a></li>
-        {% url 'importacion:importar' proyecto.pk as u_imp %}
-        <li class="nav-item"><a class="nav-link {% if u_imp in request.path %}active{% endif %}" href="{{ u_imp }}">Importar CSV</a></li>
-        {% url 'reportes:reporte' proyecto.pk as u_rep %}
-        <li class="nav-item"><a class="nav-link {% if u_rep in request.path %}active{% endif %}" href="{{ u_rep }}">Reporte</a></li>
-      </ul>
+<body>
+<div class="shell">
+  <aside class="sidebar d-print-none">
+    <a class="brand" href="{% url 'proyectos:lista' %}">
+      <span class="brand-logo">P<i></i></span>
+      <span><strong>PSPS Control</strong><small>Calidad de software</small></span>
+    </a>
+    <div class="side-label">Espacio de trabajo</div>
+    <nav class="side-nav">
+      <a class="side-link {% if not proyecto %}active{% endif %}" href="{% url 'proyectos:lista' %}"><span class="ico">▤</span> Proyectos</a>
+    </nav>
+    {% if proyecto %}
+    <div class="side-project">
+      <div class="side-label">Proyecto en seguimiento</div>
+      <div class="sp-name">{{ proyecto.nombre }}</div>
+      <div class="sp-dates">{{ proyecto.fecha_inicio|date:"d/m/Y" }} – {{ proyecto.fecha_fin|date:"d/m/Y" }}</div>
     </div>
+    <nav class="side-nav">
+      {% url 'metricas:dashboard' proyecto.pk as u_dash %}
+      <a class="side-link {% if request.path == u_dash %}active{% endif %}" href="{{ u_dash }}"><span class="ico">◫</span> Dashboard</a>
+      {% url 'actividades:lista' proyecto.pk as u_act %}
+      <a class="side-link {% if u_act in request.path %}active{% endif %}" href="{{ u_act }}"><span class="ico">✓</span> Actividades SQA</a>
+      {% url 'pruebas:lista' proyecto.pk as u_pru %}
+      <a class="side-link {% if u_pru in request.path %}active{% endif %}" href="{{ u_pru }}"><span class="ico">◷</span> Pruebas</a>
+      {% url 'defectos:lista' proyecto.pk as u_def %}
+      <a class="side-link {% if u_def in request.path %}active{% endif %}" href="{{ u_def }}"><span class="ico">◇</span> Defectos</a>
+      {% url 'importacion:importar' proyecto.pk as u_imp %}
+      <a class="side-link {% if u_imp in request.path %}active{% endif %}" href="{{ u_imp }}"><span class="ico">⇪</span> Importar CSV</a>
+      {% url 'reportes:reporte' proyecto.pk as u_rep %}
+      <a class="side-link {% if u_rep in request.path %}active{% endif %}" href="{{ u_rep }}"><span class="ico">▥</span> Reporte</a>
+    </nav>
+    {% endif %}
+    <div class="side-foot">UAZ Campus Siglo XXI<br>Calidad de Software</div>
+  </aside>
+  <div class="main">
+    <main class="content">
+      {% for m in messages %}
+      <div class="flash flash-{{ m.tags|default:'info' }} d-print-none" role="alert">{{ m }}</div>
+      {% endfor %}
+      {% block contenido %}{% endblock %}
+    </main>
   </div>
 </div>
-{% endif %}
-<main class="container-xl py-4">
-  {% for m in messages %}
-  <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags|default:'info' }}{% endif %} d-print-none" role="alert">{{ m }}</div>
-  {% endfor %}
-  {% block contenido %}{% endblock %}
-</main>
-<footer class="container-xl text-muted small pb-4 d-print-none">PSPS Control SQA · Calidad de Software · UAZ Campus Siglo XXI</footer>
 <script src="{% static 'vendor/bootstrap.bundle.min.js' %}"></script>
 {% block scripts %}{% endblock %}
 </body>

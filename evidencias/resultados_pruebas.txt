@@ -1,0 +1,148 @@
+﻿Ejecución contra PostgreSQL local - 2026-10-18 20:37
+Ejecutó: Pablo Valentín Varela Rivera
+Base de datos: 12 objects imported automatically (use -v 2 for details).  postgresql 180006
+Commit: e1b3440
+Comando: python manage.py test -v 2
+
+python.exe : Creating test database for alias 'default' ('test_psps_sqa')...
+En línea: 1 Carácter: 11
++ $salida = & $py manage.py test -v 2 2>&1 | Out-String
++           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Creating test d...t_psps_sqa')...:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+Found 80 test(s).
+Operations to perform:
+  Synchronize unmigrated apps: messages, staticfiles
+  Apply all migrations: actividades, auth, contenttypes, defectos, metricas, proyectos, pruebas, sessions
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying proyectos.0001_initial... OK
+  Applying actividades.0001_initial... OK
+  Applying contenttypes.0001_initial... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0001_initial... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying defectos.0001_initial... OK
+  Applying metricas.0001_initial... OK
+  Applying pruebas.0001_initial... OK
+test_crear_actividad_asigna_identificador (actividades.tests.ActividadesTest.test_crear_actividad_asigna_identificador) ... ok
+test_evidencia_obligatoria (actividades.tests.ActividadesTest.test_evidencia_obligatoria) ... ok
+test_filtrar_por_estado_y_texto (actividades.tests.ActividadesTest.test_filtrar_por_estado_y_texto) ... ok
+test_identificador_repetido_en_el_proyecto_se_rechaza 
+(actividades.tests.ActividadesTest.test_identificador_repetido_en_el_proyecto_se_rechaza) ... ok
+test_mismo_identificador_en_otro_proyecto_es_valido 
+(actividades.tests.ActividadesTest.test_mismo_identificador_en_otro_proyecto_es_valido) ... ok
+test_no_se_edita_actividad_de_otro_proyecto (actividades.tests.ActividadesTest.test_no_se_edita_actividad_de_otro_proyecto) ... ok
+test_terminada_sin_fecha_usa_hoy_y_otro_estado_la_limpia 
+(actividades.tests.ActividadesTest.test_terminada_sin_fecha_usa_hoy_y_otro_estado_la_limpia) ... ok
+test_cerrar_exige_fecha_y_verificador (defectos.tests.DefectosTest.test_cerrar_exige_fecha_y_verificador) ... ok
+test_cierre_no_puede_ser_anterior_al_reporte (defectos.tests.DefectosTest.test_cierre_no_puede_ser_anterior_al_reporte) ... ok
+test_evidencia_obligatoria (defectos.tests.DefectosTest.test_evidencia_obligatoria) ... ok
+test_filtro_por_severidad_de_texto (defectos.tests.DefectosTest.test_filtro_por_severidad_de_texto) ... ok
+test_reabrir_limpia_el_cierre (defectos.tests.DefectosTest.test_reabrir_limpia_el_cierre) ... ok
+test_registrar_defecto (defectos.tests.DefectosTest.test_registrar_defecto) ... ok
+test_acepta_csv_en_cp1252_de_excel (importacion.tests.ImportacionTest.test_acepta_csv_en_cp1252_de_excel) ... ok
+test_acepta_fechas_dd_mm_aaaa_de_excel (importacion.tests.ImportacionTest.test_acepta_fechas_dd_mm_aaaa_de_excel) ... ok
+test_acepta_punto_y_coma_de_excel (importacion.tests.ImportacionTest.test_acepta_punto_y_coma_de_excel) ... ok
+test_archivo_vacio_o_sin_registros (importacion.tests.ImportacionTest.test_archivo_vacio_o_sin_registros) ... ok
+test_campos_vacios_obligatorios (importacion.tests.ImportacionTest.test_campos_vacios_obligatorios) ... ok
+test_casos_y_resultados (importacion.tests.ImportacionTest.test_casos_y_resultados) ... ok
+test_codificacion_invalida (importacion.tests.ImportacionTest.test_codificacion_invalida) ... ok
+test_defectos_cerrados_requieren_cierre_y_verificador 
+(importacion.tests.ImportacionTest.test_defectos_cerrados_requieren_cierre_y_verificador) ... ok
+test_encabezado_incorrecto (importacion.tests.ImportacionTest.test_encabezado_incorrecto) ... ok
+test_evidencia_vacia_se_rechaza (importacion.tests.ImportacionTest.test_evidencia_vacia_se_rechaza) ... ok
+test_fecha_invalida (importacion.tests.ImportacionTest.test_fecha_invalida) ... ok
+test_identificador_duplicado_en_el_archivo (importacion.tests.ImportacionTest.test_identificador_duplicado_en_el_archivo) ... ok
+test_ignora_columna_vacia_al_final_de_excel (importacion.tests.ImportacionTest.test_ignora_columna_vacia_al_final_de_excel) ... ok
+test_importa_archivo_valido_y_recalcula (importacion.tests.ImportacionTest.test_importa_archivo_valido_y_recalcula) ... ok
+test_importacion_repetida_se_rechaza (importacion.tests.ImportacionTest.test_importacion_repetida_se_rechaza) ... ok
+test_mismo_identificador_en_otro_proyecto_no_es_duplicado 
+(importacion.tests.ImportacionTest.test_mismo_identificador_en_otro_proyecto_no_es_duplicado) ... ok
+test_plantilla_desconocida_da_404 (importacion.tests.ImportacionTest.test_plantilla_desconocida_da_404) ... ok
+test_plantillas_descargables_con_encabezados (importacion.tests.ImportacionTest.test_plantillas_descargables_con_encabezados) ... ok
+test_resultado_de_caso_inexistente (importacion.tests.ImportacionTest.test_resultado_de_caso_inexistente) ... ok
+test_solo_validar_no_guarda (importacion.tests.ImportacionTest.test_solo_validar_no_guarda) ... ok
+test_tipo_invalido_o_sin_archivo (importacion.tests.ImportacionTest.test_tipo_invalido_o_sin_archivo) ... ok
+test_un_error_impide_guardar_todo (importacion.tests.ImportacionTest.test_un_error_impide_guardar_todo) ... ok
+test_valor_no_permitido (importacion.tests.ImportacionTest.test_valor_no_permitido) ... ok
+test_guarda_umbrales_y_conserva_historial (metricas.tests.CorteGuardadoTest.test_guarda_umbrales_y_conserva_historial) ... ok
+test_guardar_registro_recalcula_el_corte_del_dia 
+(metricas.tests.CorteGuardadoTest.test_guardar_registro_recalcula_el_corte_del_dia) ... ok
+test_mismo_dia_reemplaza_solo_ese_corte (metricas.tests.CorteGuardadoTest.test_mismo_dia_reemplaza_solo_ese_corte) ... ok
+test_crear_corte_con_fecha_invalida (metricas.tests.DashboardYReporteTest.test_crear_corte_con_fecha_invalida) ... ok
+test_dashboard_sin_cortes (metricas.tests.DashboardYReporteTest.test_dashboard_sin_cortes) ... ok
+test_mismos_valores_en_dashboard_y_reporte (metricas.tests.DashboardYReporteTest.test_mismos_valores_en_dashboard_y_reporte) ... ok
+test_reporte_conserva_umbrales_y_pendientes (metricas.tests.DashboardYReporteTest.test_reporte_conserva_umbrales_y_pendientes) ... 
+ok
+test_no_aplicables_se_excluyen (metricas.tests.EstadoGeneralTest.test_no_aplicables_se_excluyen) ... ok
+test_prioridad_rojo_gris_amarillo_verde (metricas.tests.EstadoGeneralTest.test_prioridad_rojo_gris_amarillo_verde) ... ok
+test_actividad_terminada_despues_del_corte_es_pendiente 
+(metricas.tests.IndicadoresTest.test_actividad_terminada_despues_del_corte_es_pendiente) ... ok
+test_avance_no_aplica_si_nada_previsto_al_corte (metricas.tests.IndicadoresTest.test_avance_no_aplica_si_nada_previsto_al_corte) 
+... ok
+test_corte_excluye_registros_posteriores (metricas.tests.IndicadoresTest.test_corte_excluye_registros_posteriores) ... ok
+test_critico_cerrado_despues_del_corte_cuenta_como_abierto 
+(metricas.tests.IndicadoresTest.test_critico_cerrado_despues_del_corte_cuenta_como_abierto) ... ok
+test_cumplimiento_sqa_mismo_conjunto_exigible (metricas.tests.IndicadoresTest.test_cumplimiento_sqa_mismo_conjunto_exigible) ... ok
+test_defecto_critico_abierto_es_rojo_y_cerrar_lo_corrige 
+(metricas.tests.IndicadoresTest.test_defecto_critico_abierto_es_rojo_y_cerrar_lo_corrige) ... ok
+test_defectos_sin_cierres_no_evalua_tiempo (metricas.tests.IndicadoresTest.test_defectos_sin_cierres_no_evalua_tiempo) ... ok
+test_division_entre_cero_no_es_cero_por_ciento (metricas.tests.IndicadoresTest.test_division_entre_cero_no_es_cero_por_ciento) ... 
+ok
+test_proyecto_todo_verde (metricas.tests.IndicadoresTest.test_proyecto_todo_verde) ... ok
+test_proyecto_vacio_no_inventa_resultados (metricas.tests.IndicadoresTest.test_proyecto_vacio_no_inventa_resultados) ... ok
+test_pruebas_aprobadas_porcentaje (metricas.tests.IndicadoresTest.test_pruebas_aprobadas_porcentaje) ... ok
+test_sin_defectos_requiere_confirmacion_para_reportar_cero 
+(metricas.tests.IndicadoresTest.test_sin_defectos_requiere_confirmacion_para_reportar_cero) ... ok
+test_tiempo_promedio_de_resolucion (metricas.tests.IndicadoresTest.test_tiempo_promedio_de_resolucion) ... ok
+test_tiempo_promedio_usa_T_del_proyecto (metricas.tests.IndicadoresTest.test_tiempo_promedio_usa_T_del_proyecto) ... ok
+test_ultimo_resultado_por_caso (metricas.tests.IndicadoresTest.test_ultimo_resultado_por_caso) ... ok
+test_limites_exactos_avance_y_sqa (metricas.tests.SemaforosTest.test_limites_exactos_avance_y_sqa) ... ok
+test_limites_exactos_porcentaje_pruebas (metricas.tests.SemaforosTest.test_limites_exactos_porcentaje_pruebas) ... ok
+test_limites_exactos_tiempo_resolucion (metricas.tests.SemaforosTest.test_limites_exactos_tiempo_resolucion) ... ok
+test_campos_obligatorios (proyectos.tests.ProyectosTest.test_campos_obligatorios) ... ok
+test_confirmar_registro_de_defectos (proyectos.tests.ProyectosTest.test_confirmar_registro_de_defectos) ... ok
+test_editar_proyecto (proyectos.tests.ProyectosTest.test_editar_proyecto) ... ok
+test_fin_anterior_al_inicio_se_rechaza (proyectos.tests.ProyectosTest.test_fin_anterior_al_inicio_se_rechaza) ... ok
+test_formulario_de_nuevo_intervalo_precarga_datos (proyectos.tests.ProyectosTest.test_formulario_de_nuevo_intervalo_precarga_datos) 
+... ok
+test_lista_vacia_y_con_proyecto (proyectos.tests.ProyectosTest.test_lista_vacia_y_con_proyecto) ... ok
+test_no_duplica_mismo_nombre_e_intervalo (proyectos.tests.ProyectosTest.test_no_duplica_mismo_nombre_e_intervalo) ... ok
+test_nuevo_intervalo_conserva_los_anteriores (proyectos.tests.ProyectosTest.test_nuevo_intervalo_conserva_los_anteriores) ... ok
+test_registrar_proyecto_calcula_fin_con_la_duracion 
+(proyectos.tests.ProyectosTest.test_registrar_proyecto_calcula_fin_con_la_duracion) ... ok
+test_caso_sin_resultado_esperado_se_rechaza (pruebas.tests.PruebasTest.test_caso_sin_resultado_esperado_se_rechaza) ... ok
+test_crear_caso_con_version_y_resultado_esperado (pruebas.tests.PruebasTest.test_crear_caso_con_version_y_resultado_esperado) ... ok
+test_lista_muestra_ultimo_resultado_y_filtra (pruebas.tests.PruebasTest.test_lista_muestra_ultimo_resultado_y_filtra) ... ok
+test_registrar_resultado_exige_evidencia (pruebas.tests.PruebasTest.test_registrar_resultado_exige_evidencia) ... ok
+test_fecha_de_corte_inexistente_muestra_el_ultimo (reportes.tests.ReportesTest.test_fecha_de_corte_inexistente_muestra_el_ultimo) 
+... ok
+test_proyecto_inexistente (reportes.tests.ReportesTest.test_proyecto_inexistente) ... ok
+test_reporte_a_fecha_de_corte_historico_no_cambia (reportes.tests.ReportesTest.test_reporte_a_fecha_de_corte_historico_no_cambia) 
+... ok
+test_reporte_sin_cortes (reportes.tests.ReportesTest.test_reporte_sin_cortes) ... ok
+
+----------------------------------------------------------------------
+Ran 80 tests in 1.063s
+
+OK
+Destroying test database for alias 'default' ('test_psps_sqa')...
+
+  Applying sessions.0001_initial... OK
+System check identified no issues (0 silenced).
+

@@ -63,7 +63,7 @@ class ImportacionTest(TestCase):
 
     def test_fecha_invalida(self):
         p = proyecto()
-        _, errores = validacion.validar(p, 'actividades', (CAB_ACT + 'A-1,N,Revisión,L,31/10/2026,Planeada,,x\n').encode())
+        _, errores = validacion.validar(p, 'actividades', (CAB_ACT + 'A-1,N,Revisión,L,32/10/2026,Planeada,,x\n').encode())
         self.assertEqual(errores[0]['campo'], 'fecha_prevista')
         _, errores = validacion.validar(p, 'actividades', (CAB_ACT + 'A-1,N,Revisión,L,2026-02-30,Planeada,,x\n').encode())
         self.assertEqual(errores[0]['campo'], 'fecha_prevista')
@@ -106,13 +106,39 @@ class ImportacionTest(TestCase):
 
     def test_codificacion_invalida(self):
         p = proyecto()
-        _, errores = validacion.validar(p, 'actividades', 'á'.encode('latin-1'))
+        _, errores = validacion.validar(p, 'actividades', b'\x81')
         self.assertIn('UTF-8', errores[0]['mensaje'])
 
     def test_acepta_punto_y_coma_de_excel(self):
         p = proyecto()
         texto = (CAB_ACT + OK1).replace(',', ';')
         filas, errores = validacion.validar(p, 'actividades', texto.encode('utf-8-sig'))
+        self.assertEqual((len(filas), errores), (1, []))
+
+    def test_acepta_csv_en_cp1252_de_excel(self):
+        p = proyecto()
+        filas, errores = validacion.validar(p, 'actividades', (CAB_ACT + OK1 + OK2).encode('cp1252'))
+        self.assertEqual((len(filas), errores), (2, []))
+        self.assertEqual(filas[0]['nombre'], 'Revisión SRS')
+        self.assertEqual(filas[1]['responsable'], 'Sebastián')
+
+    def test_acepta_fechas_dd_mm_aaaa_de_excel(self):
+        p = proyecto()
+        fila_act = 'A-1,Revisión SRS,Revisión,Luis,10/10/2026,Terminada,11/10/2026,PR 4\n'
+        filas, errores = validacion.validar(p, 'actividades', (CAB_ACT + fila_act).encode('utf-8'))
+        self.assertEqual(errores, [])
+        self.assertEqual(filas[0]['fecha_prevista'], date(2026, 10, 10))
+        self.assertEqual(filas[0]['fecha_terminada'], date(2026, 10, 11))
+        cab_def = 'identificador,descripcion,severidad,estado,fecha_reporte,responsable,fecha_cierre,verificado_por,evidencia\n'
+        fila_def = 'D-1,Falla,Alta,Cerrado,11/10/2026 10:00,Dev,12/10/2026 14:30,Francisco,log\n'
+        filas_d, errores_d = validacion.validar(p, 'defectos', (cab_def + fila_def).encode('utf-8'))
+        self.assertEqual((len(filas_d), errores_d), (1, []))
+
+    def test_ignora_columna_vacia_al_final_de_excel(self):
+        p = proyecto()
+        cab_extra = CAB_ACT.rstrip('\n') + ',\n'
+        fila_extra = OK1.rstrip('\n') + ',\n'
+        filas, errores = validacion.validar(p, 'actividades', (cab_extra + fila_extra).encode('utf-8'))
         self.assertEqual((len(filas), errores), (1, []))
 
     def test_casos_y_resultados(self):

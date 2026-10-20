@@ -32,3 +32,14 @@ En `datos_prueba/` hay 4 CSV de ejemplo para importar (casos antes que resultado
 ```bash
 python manage.py cargar_demo
 ```
+
+
+
+## Bitácora de SQA
+
+La bitácora viva del equipo está en Google Sheets:
+https://docs.google.com/spreadsheets/d/1l4mDJDqk2-E_HDppz1oI5_ATxX0b2vGE5zbmhxZ29I0/edit
+
+Antes de cada entrega (20 oct, 3 nov, 19 nov) el responsable de calidad guarda una copia
+en `Bitacora_SQA.xlsx` en este repositorio. Las capturas y logs que la bitácora referencia
+están en `evidencias/`.

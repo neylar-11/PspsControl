@@ -57,9 +57,14 @@ def _convertir(valor, tipo):
     if tipo == 'texto':
         return valor
     if tipo == 'fecha':
-        return datetime.strptime(valor, '%Y-%m-%d').date()
+        for formato in ('%Y-%m-%d', '%d/%m/%Y'):
+            try:
+                return datetime.strptime(valor, formato).date()
+            except ValueError:
+                continue
+        raise ValueError
     if tipo == 'fechahora':
-        for formato in ('%Y-%m-%d %H:%M', '%Y-%m-%dT%H:%M', '%Y-%m-%d'):
+        for formato in ('%Y-%m-%d %H:%M', '%Y-%m-%dT%H:%M', '%Y-%m-%d', '%d/%m/%Y %H:%M', '%d/%m/%Y'):
             try:
                 return timezone.make_aware(datetime.strptime(valor, formato))
             except ValueError:
@@ -71,10 +76,14 @@ def _convertir(valor, tipo):
 
 
 def _leer(contenido):
-    try:
-        texto = contenido.decode('utf-8-sig')
-    except UnicodeDecodeError:
-        return None, [{'fila': 1, 'campo': '(archivo)', 'mensaje': 'El archivo debe estar codificado en UTF-8.'}]
+    for codificacion in ('utf-8-sig', 'cp1252'):
+        try:
+            texto = contenido.decode(codificacion)
+            break
+        except UnicodeDecodeError:
+            continue
+    else:
+        return None, [{'fila': 1, 'campo': '(archivo)', 'mensaje': 'El archivo debe estar codificado en UTF-8 o CP1252 (Excel).'}]
     primera = texto.splitlines()[0] if texto.strip() else ''
     delimitador = ';' if primera.count(';') > primera.count(',') else ','
     lector = csv.DictReader(io.StringIO(texto), delimiter=delimitador)
@@ -90,7 +99,10 @@ def validar(proyecto, tipo, contenido):
     esperadas = list(cfg['columnas'])
     if lector.fieldnames is None:
         return [], [{'fila': 1, 'campo': '(archivo)', 'mensaje': 'El archivo está vacío.'}]
-    columnas = [c.strip() for c in lector.fieldnames]
+    lector.fieldnames = [c.strip() for c in lector.fieldnames]
+    columnas = list(lector.fieldnames)
+    while columnas and columnas[-1] == '':
+        columnas.pop()
     faltan = [c for c in esperadas if c not in columnas]
     sobran = [c for c in columnas if c not in esperadas]
     if faltan or sobran:
@@ -115,8 +127,8 @@ def validar(proyecto, tipo, contenido):
             try:
                 fila[nombre] = _convertir(valor, kind)
             except ValueError:
-                msg = {'fecha': 'Fecha inválida (use AAAA-MM-DD).',
-                       'fechahora': 'Fecha/hora inválida (use AAAA-MM-DD o AAAA-MM-DD HH:MM).'}.get(
+                msg = {'fecha': 'Fecha inválida (use AAAA-MM-DD o DD/MM/AAAA).',
+                       'fechahora': 'Fecha/hora inválida (use AAAA-MM-DD, DD/MM/AAAA o con HH:MM).'}.get(
                     kind if isinstance(kind, str) else '', f'Valor no permitido. Opciones: {", ".join(kind[1])}.'
                     if not isinstance(kind, str) else 'Valor inválido.')
                 errores_fila.append((nombre, msg))

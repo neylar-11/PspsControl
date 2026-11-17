@@ -46,8 +46,7 @@ están en `evidencias/`.
 
 ## Despliegue (Render)
 
-El producto está desplegado en: **<URL pendiente: https://psps-control-sqa.onrender.com>**
-
+El producto está desplegado en: **https://psps-control-sqa.onrender.com**
 Cómo se despliega (detalle en `docs/06_Guia_de_Instalacion_y_Uso.docx`, sección «Despliegue»):
 
 1. En [render.com](https://render.com), **New → Blueprint**, elegir este repositorio. El archivo `render.yaml` crea el servicio web y la base PostgreSQL.

@@ -1,17 +1,11 @@
 ﻿Ejecución contra PostgreSQL local - 2026-10-18 20:37
 Ejecutó: Pablo Valentín Varela Rivera
-Base de datos: 12 objects imported automatically (use -v 2 for details).  postgresql 180006
+Base de datos: PostgreSQL 18 (server_version_num 180006)
 Commit: e1b3440
 Comando: python manage.py test -v 2
 
-python.exe : Creating test database for alias 'default' ('test_psps_sqa')...
-En línea: 1 Carácter: 11
-+ $salida = & $py manage.py test -v 2 2>&1 | Out-String
-+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (Creating test d...t_psps_sqa')...:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
+Creating test database for alias 'default' ('test_psps_sqa')...
  
-
 Found 80 test(s).
 Operations to perform:
   Synchronize unmigrated apps: messages, staticfiles

@@ -40,7 +40,7 @@ Documentos 01–09 en `docs/` (PDF en `docs/pdf/`). Documentos finales 10–13 e
 | 08 | Plan de entregas y riesgos | `docs/08_Plan_de_Entregas_y_Riesgos.docx` |
 | 09 | Guion de la demo (20 oct) | `docs/09_Guion_Demo_20_Oct.docx` |
 | 10 | Reporte ejecutivo | `docs/docs/10_Reporte_Ejecutivo.docx` |
-| 11 | SRS PSPS Control SQA v1.1 | `docs/docs/11_SRS_PSPS_Control_SQA.docx` |
+| 11 | SRS PSPS Control SQA v1.2 | `docs/docs/11_SRS_PSPS_Control_SQA.docx` |
 | 12 | Requisitos funcionales v1.1 | `docs/docs/12_Requisitos_Funcionales.docx` |
 | 13 | Casos de uso v1.1 | `docs/docs/13_Casos_de_Uso.docx` |
 

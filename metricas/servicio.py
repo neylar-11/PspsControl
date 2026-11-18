@@ -71,8 +71,9 @@ def _porcentaje(clave, num, den, motivo_sin_datos):
     if den == 0:
         return None
     verde, amarillo = UMBRALES_PORCENTAJE[clave]
-    valor = round(num / den * 100, 1)
-    return _indicador(clave, semaforo_porcentaje(valor, verde, amarillo), valor, '', num, den,
+    exacto = num / den * 100
+    # DEF-05: el semáforo se decide con el valor exacto; el redondeo es solo para mostrar.
+    return _indicador(clave, semaforo_porcentaje(exacto, verde, amarillo), round(exacto, 1), '', num, den,
                       f'Verde ≥ {verde}% · Amarillo ≥ {amarillo}% y < {verde}% · Rojo < {amarillo}%')
 
 
@@ -144,8 +145,9 @@ def calcular(proyecto, corte):
     regla_t = f'T = {t} h · Verde ≤ {t} h · Amarillo ≤ {2 * t} h · Rojo > {2 * t} h'
     if cerrados:
         horas = [(d.fecha_cierre - d.fecha_reporte).total_seconds() / 3600 for d in cerrados]
-        promedio = round(sum(horas) / len(horas), 1)
-        indicadores.append(_indicador('tiempo_resolucion', semaforo_tiempo(promedio, t), promedio, '', sum(horas),
+        promedio = sum(horas) / len(horas)
+        # DEF-05: el semáforo se decide con el promedio exacto; el redondeo es solo para mostrar.
+        indicadores.append(_indicador('tiempo_resolucion', semaforo_tiempo(promedio, t), round(promedio, 1), '', sum(horas),
                                       len(cerrados), regla_t, 'h'))
     elif not defectos and proyecto.registro_defectos_confirmado:
         indicadores.append(_indicador('tiempo_resolucion', NO_APLICA, None, 'No hay defectos reportados al corte.', None,

@@ -68,6 +68,14 @@ class IndicadoresTest(TestCase):
         i = indicador(servicio.calcular(p, HOY), 'pruebas_aprobadas')
         self.assertEqual((i['valor'], i['estado']), (95.0, 'verde'))
 
+    def test_semaforo_usa_el_valor_exacto_no_el_redondeado(self):
+        # DEF-05: 189 de 199 = 94.97 %; se muestra 95.0 pero el semáforo debe ser amarillo (< 95).
+        p = proyecto()
+        for res in ['Aprobada'] * 189 + ['Fallida'] * 10:
+            resultado(caso(p), res=res)
+        i = indicador(servicio.calcular(p, HOY), 'pruebas_aprobadas')
+        self.assertEqual((i['valor'], i['estado']), (95.0, 'amarillo'))
+
     def test_ultimo_resultado_por_caso(self):
         p = proyecto()
         c = caso(p)
@@ -139,6 +147,13 @@ class IndicadoresTest(TestCase):
         defecto(p, estado='Abierto')   # no entra al promedio
         i = indicador(servicio.calcular(p, HOY), 'tiempo_resolucion')
         self.assertEqual((i['valor'], i['estado']), (36.0, 'verde'))
+
+    def test_tiempo_promedio_semaforo_con_valor_exacto(self):
+        # DEF-05: promedio 72.03 h se muestra como 72.0 pero supera T = 72 → amarillo.
+        p = proyecto()
+        defecto(p, estado='Cerrado', horas=72.03)
+        i = indicador(servicio.calcular(p, HOY), 'tiempo_resolucion')
+        self.assertEqual((i['valor'], i['estado']), (72.0, 'amarillo'))
 
     def test_tiempo_promedio_usa_T_del_proyecto(self):
         p = proyecto(objetivo_resolucion_horas=10)

@@ -4,6 +4,7 @@ Plataforma web de seguimiento de calidad de software (Django 5.2 + PostgreSQL).
 Proyecto de Calidad de Software, UAZ Campus Siglo XXI.
 
 Guía completa de instalación y uso: `docs/06_Guia_de_Instalacion_y_Uso.docx` (o su PDF en `docs/pdf/`).
+
 ## Documentos
 
 Todos en `docs/` (PDF de cada uno en `docs/pdf/`).
@@ -20,7 +21,7 @@ Todos en `docs/` (PDF de cada uno en `docs/pdf/`).
 | 08 | Plan de entregas y riesgos | `docs/08_Plan_de_Entregas_y_Riesgos.docx` |
 | 09 | Guion de la demo (20 oct) | `docs/09_Guion_Demo_20_Oct.docx` |
 | 10 | Reporte ejecutivo (entrega final) | `docs/10_Reporte_Ejecutivo.docx` |
-| 11 | SRS v1.1 | `docs/11_SRS_PSPS_Control_SQA.docx` |
+| 11 | SRS v1.2 | `docs/11_SRS_PSPS_Control_SQA.docx` |
 | 12 | Requisitos funcionales v1.1 | `docs/12_Requisitos_Funcionales.docx` |
 | 13 | Casos de uso v1.1 | `docs/13_Casos_de_Uso.docx` |
 
